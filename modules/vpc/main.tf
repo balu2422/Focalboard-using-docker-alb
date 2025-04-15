@@ -1,64 +1,49 @@
 resource "aws_vpc" "main" {
-  cidr_block           = var.cidr_block
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+  cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "MyVPC"
+    Name = "MainVPC"
   }
 }
 
-resource "aws_internet_gateway" "main" {
+resource "aws_subnet" "public" {
+  count = 2
+  vpc_id            = aws_vpc.main.id
+  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
+  availability_zone = element(data.aws_availability_zones.available.names, count.index)
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "PublicSubnet-${count.index}"
+  }
+}
+
+data "aws_availability_zones" "available" {}
+
+resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "MyInternetGateway"
-  }
-}
-
-resource "aws_subnet" "public1" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.public_subnet1_cidr
-  map_public_ip_on_launch = true
-  availability_zone = var.availability_zone1
-
-  tags = {
-    Name = "PublicSubnet1"
-  }
-}
-
-resource "aws_subnet" "public2" {
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = var.public_subnet2_cidr
-  map_public_ip_on_launch = true
-  availability_zone = var.availability_zone2
-
-  tags = {
-    Name = "PublicSubnet2"
+    Name = "MainIGW"
   }
 }
 
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+
   tags = {
     Name = "PublicRouteTable"
   }
 }
 
-resource "aws_route" "internet_access" {
-  route_table_id         = aws_route_table.public.id
-  destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_internet_gateway.main.id
-}
-
-resource "aws_subnet_route_table_association" "public1" {
-  subnet_id      = aws_subnet.public1.id
-  route_table_id = aws_route_table.public.id
-}
-
-resource "aws_subnet_route_table_association" "public2" {
-  subnet_id      = aws_subnet.public2.id
+resource "aws_route_table_association" "public" {
+  count          = length(aws_subnet.public[*].id)
+  subnet_id      = element(aws_subnet.public[*].id, count.index)
   route_table_id = aws_route_table.public.id
 }
 
@@ -66,10 +51,10 @@ output "vpc_id" {
   value = aws_vpc.main.id
 }
 
-output "public_subnet1_id" {
-  value = aws_subnet.public1.id
+output "subnet_ids" {
+  value = aws_subnet.public[*].id
 }
 
-output "public_subnet2_id" {
-  value = aws_subnet.public2.id
+output "route_table_id" {
+  value = aws_route_table.public.id
 }
