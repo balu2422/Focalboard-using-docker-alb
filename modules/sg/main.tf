@@ -53,6 +53,6 @@ output "ec2_security_group_id" {
   value = aws_security_group.ec2.id
 }
 
-_security_group_id" {
+output "alb_security_group_id" {
   value = aws_security_group.alb.id
 }
