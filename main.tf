@@ -3,17 +3,17 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "../modules/vpc"
+  source = "./modules/vpc"
   cidr_block = var.vpc_cidr_block
 }
 
 module "security_groups" {
-  source = "../modules/sg"
+  source = "./modules/sg"
   vpc_id = module.vpc.vpc_id
 }
 
 module "ec2" {
-  source = "../modules/ec2"
+  source = "./modules/ec2"
   ami = var.ec2_ami
   instance_type = var.ec2_instance_type
   subnet_id = module.vpc.public_subnet_id
@@ -29,7 +29,7 @@ module "ec2" {
 }
 
 module "alb" {
-  source = "../modules/alb"
+  source = "./modules/alb"
   vpc_id = module.vpc.vpc_id
   subnet_ids = [module.vpc.public_subnet_id]
   security_group_ids = [module.security_groups.alb_sg_id]
