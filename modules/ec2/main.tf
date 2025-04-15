@@ -1,8 +1,9 @@
 resource "aws_instance" "web" {
-  ami           = "ami-0abcdef1234567890" # Replace with a valid AMI ID
-  instance_type = "t2.micro"
+  ami           = var.ami
+  instance_type = var.instance_type
   subnet_id     = var.subnet_id
-  security_groups = [var.security_group_id]
+  security_group_id = var.security_group_id
+  user_data     = var.user_data
 
   tags = {
     Name = "MyEC2Instance"
