@@ -1,8 +1,8 @@
 terraform{
   backend "s3" {
-    bucket         = "terraform-state-backend-vamsee"
+    bucket         = "open-projecttask123 "
     key            = "terraform/openproject"
-    region         = "us-west-1"
+    region         = "us-west-2"
     encrypt        = true
   }
 }
