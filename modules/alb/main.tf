@@ -42,6 +42,6 @@ resource "aws_lb_target_group" "main" {
 
 resource "aws_lb_target_group_attachment" "web" {
   target_group_arn = aws_lb_target_group.main.arn
-  target_id        = aws_instance.web.id
+  target_id        = var.target_instance_id
   port             = 80
 }
