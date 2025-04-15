@@ -1,0 +1,54 @@
+name: Terraform Workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Check for required files
+      run: |
+        if [ ! -f "main.tf" ]; then
+          echo "Error: main.tf not found!"
+          exit 1
+        fi
+        if [ ! -f "terraform.tfvars" ]; then
+          echo "Error: terraform.tfvars not found!"
+          exit 1
+        fi
+        if [ ! -f "var.tf" ]; then
+          echo "Error: var.tf not found!"
+          exit 1
+        fi
+
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v1
+      with:
+        terraform_version: 1.0.0
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Apply or Destroy
+      run: |
+        if [ "${{ github.event.inputs.action }}" == "apply" ]; then
+          terraform apply -auto-approve -var-file="terraform.tfvars"
+        elif [ "${{ github.event.inputs.action }}" == "destroy" ]; then
+          terraform destroy -auto-approve -var-file="terraform.tfvars"
+        else
+          echo "Invalid action specified"
+          exit 1
