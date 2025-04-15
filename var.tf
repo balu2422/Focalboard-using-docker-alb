@@ -1,17 +1,39 @@
-variable "vpc_cidr_block" {
+variable "cidr_block" {
   description = "The CIDR block for the VPC"
-  type        = string
   default     = "10.0.0.0/16"
 }
 
-variable "ec2_ami" {
-  description = "The AMI ID for the EC2 instance"
-  type        = string
-  default     = "ami-0c55b159cbfafe1f0" # Amazon Linux 2 AMI
+variable "public_subnet1_cidr" {
+  description = "The CIDR block for the first public subnet"
+  default     = "10.0.1.0/24"
 }
 
-variable "ec2_instance_type" {
-  description = "The instance type for the EC2 instance"
+variable "public_subnet2_cidr" {
+  description = "The CIDR block for the second public subnet"
+  default     = "10.0.2.0/24"
+}
+
+variable "availability_zone1" {
+  description = "The availability zone for the first public subnet"
+  default     = "us-east-1a"
+}
+
+variable "availability_zone2" {
+  description = "The availability zone for the second public subnet"
+  default     = "us-east-1b"
+}
+
+variable "ami" {
+  description = "The AMI ID"
   type        = string
-  default     = "t2.micro"
+}
+
+variable "instance_type" {
+  description = "The instance type"
+  type        = string
+}
+
+variable "user_data" {
+  description = "The user data script"
+  type        = string
 }
