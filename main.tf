@@ -32,6 +32,6 @@ module "alb" {
   source = "./modules/alb"
   vpc_id = module.vpc.vpc_id
   subnet_ids = [module.vpc.public_subnet_id]
-  security_group_ids = [module.security_groups.alb_sg_id]
-  target_instance_ids = [module.ec2.instance_id]
+  security_group_id = module.security_groups.alb_sg_id  # Corrected argument name
+  target_instance_id = module.ec2.instance_id  # Corrected argument name
 }
