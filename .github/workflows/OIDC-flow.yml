@@ -12,13 +12,14 @@ on:
           - apply
           - destroy
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   terraform:
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
 
     steps:
     - name: Checkout repository
