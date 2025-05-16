@@ -20,7 +20,7 @@ resource "aws_instance" "main" {
               sudo apt-get install -y docker-ce
               sudo systemctl start docker
               sudo systemctl enable docker
-              sudo docker run -d -p 80:8000 mattermost/focalboard 
+              sudo docker run -d -p 8000:8000 mattermost/focalboard 
 
               EOF
   tags = {
